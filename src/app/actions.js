@@ -8,8 +8,19 @@ import { getFirestore } from "firebase/firestore";
 // use with caution.
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
 export async function handleReviewFormSubmission(data) {
+  if (
+    !data.has("restaurantId") ||
+    !data.has("text") ||
+    !data.has("rating") ||
+    !data.has("userId")
+  ) {
+    console.error("Invalid form data:", Object.fromEntries(data.entries()));
+    throw new Error("Missing required form fields.");
+  }
+
   const { app } = await getAuthenticatedAppForUser();
   if (!app) {
+    console.error("Failed to authenticate user or retrieve app instance.");
     throw new Error("No authenticated app instance");
   }
   const db = getFirestore(app);
