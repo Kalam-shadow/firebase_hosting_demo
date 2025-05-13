@@ -8,14 +8,20 @@ import { getFirestore } from "firebase/firestore";
 // use with caution.
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions
 export async function handleReviewFormSubmission(data) {
-        const { app } = await getAuthenticatedAppForUser();
-        const db = getFirestore(app);
+  const { app } = await getAuthenticatedAppForUser();
+  if (!app) {
+    throw new Error("No authenticated app instance");
+  }
+  const db = getFirestore(app);
 
-        await addReviewToRestaurant(db, data.get("restaurantId"), {
-                text: data.get("text"),
-                rating: data.get("rating"),
-
-                // This came from a hidden form field.
-                userId: data.get("userId"),
-        });
+  try {
+    await addReviewToRestaurant(db, data.get("restaurantId"), {
+      text: data.get("text"),
+      rating: data.get("rating"),
+      userId: data.get("userId"),
+    });
+  } catch (error) {
+    console.error("Error adding review:", error);
+    throw new Error("Failed to add review to the restaurant.");
+  }
 }
