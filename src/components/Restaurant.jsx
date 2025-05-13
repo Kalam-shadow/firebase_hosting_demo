@@ -22,7 +22,8 @@ export default function Restaurant({
   const [isOpen, setIsOpen] = useState(false);
 
   // The only reason this component needs to know the user ID is to associate a review with the user, and to know whether to show the review dialog
-  const userId = useUser()?.uid || initialUserId;
+  const userId = useUser()?.uid || initialUserId || "defaultUserId";
+ // const id = id || "defaultRestaurantId";
   const [review, setReview] = useState({
     rating: 0,
     text: "",
